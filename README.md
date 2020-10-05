@@ -1,2 +1,2 @@
-# info2180-lab3
-Tic Tac Toe done with Javascript for the course INFO2180
+# INFO2180 Lab 3
+This is Lab 3 for Jason Gayle
