@@ -20,29 +20,20 @@ function addSquares(boardChildren) {
 }
 
 
-function gameMove(element, move) {
-    if (move == 'X') {
-        return 'O';
+
+
+function placeMove(element, move) {
+    console.log(move);
+    if (move === 'X') {
+        element.className += " X";
+        element.innerHTML = 'X';
     } else {
-        return 'X';
+        element.className += " O";
+        element.innerHTML = 'O';
     }
 
 }
 
-function placeX(element) {
-    element.className += " X";
-    element.innerHTML = 'X';
-}
-
-function placeO(element) {
-    element.className += " O";
-    element.innerHTML = 'O';
-}
-
-function clickableDivs(boardChildren) {
-    console.log(boardChildren)
-
-}
 
 function isNewGame(gameArr) {
     for (let arrIndex = 0; arrIndex < gameArr.length; arrIndex++) {
@@ -93,15 +84,26 @@ function initialPlay(element, gameArr, position) {
     let moves = ['X', 'O'];
     let index = Math.floor(Math.random() * moves.length);
     let firstMove = moves[index];
-    if (firstMove === 'X') {
-        placeX(element);
-        placePlay(gameArr, position, firstMove);
-    } else {
-        placeO(element);
-        placePlay(gameArr, position, firstMove);
-    }
-    console.log(gameArr)
+    placeMove(element, firstMove)
+    placePlay(gameArr, position, firstMove);
+    return firstMove;
 }
+
+function getNextMove(movesArr, moveNo) {
+    if (movesArr[moveNo - 1] === 'X') {
+        return 'O';
+    } else {
+        return 'X';
+    }
+}
+
+function gameMove(element, gameArr, position, nextMove) {
+    placeMove(element, nextMove);
+    placePlay(gameArr, position, nextMove)
+
+
+}
+
 /**
  * 
  * @param {object} boardChildren A collection of the child divs of the
@@ -113,22 +115,25 @@ function gameplay(boardChildren) {
         [null, null, null],
         [null, null, null]
     ];
+    var movesArr = []
+    var movesCounter = 0;
 
 
     for (let child = 0; child < boardChildren.length; child++) {
         let childElement = boardChildren[child];
-        let firstMove = false;
+        let firstMove = null;
         childElement.addEventListener('click', function() {
             if (isNewGame(gameArr) === true) {
-                firstMove = true;
-            }
-            if (firstMove === true) {
-                initialPlay(childElement, gameArr, child)
+                firstMove = initialPlay(childElement, gameArr, child);
+                movesArr.push(firstMove);
+                movesCounter++;
             } else {
+                var nextMove = getNextMove(movesArr, movesCounter);
+                gameMove(childElement, gameArr, child, nextMove);
+                movesArr.push(nextMove);
+                movesCounter++;
 
             }
-            // placeX(childElement);
-            firstMove = false;
 
         });
 
