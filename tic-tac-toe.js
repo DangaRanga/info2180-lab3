@@ -69,12 +69,14 @@ function initializeGame(boardChildren) {
  * @param {string} move The respective move being played. Either X or O
  */
 function placeMove(element, move) {
-    if (move === 'X') {
-        element.className += " X";
-        element.innerHTML = 'X';
-    } else {
-        element.className += " O";
-        element.innerHTML = 'O';
+    if (validateMove(element, move) === false) {
+        if (move === 'X') {
+            element.className += " X";
+            element.innerHTML = 'X';
+        } else {
+            element.className += " O";
+            element.innerHTML = 'O';
+        }
     }
 
 }
@@ -100,6 +102,15 @@ function isNewGame(gameArr) {
     return true;
 }
 
+/**
+ * Checks if the specified element already has the specified move
+ * @param {object} element 
+ * @param {string} move 
+ */
+function validateMove(element) {
+    return element.classList.contains('X') || element.classList.contains('O');
+
+}
 
 /**
  * 
@@ -167,10 +178,12 @@ function initialPlay(element, position) {
  * @returns {string} The next move to be played
  */
 function getNextMove(movesArr, moveNo) {
-    if (movesArr[moveNo - 1] === 'X') {
-        return 'O';
-    } else {
-        return 'X';
+    if (movesArr.length < 9) {
+        if (movesArr[moveNo - 1] === 'X') {
+            return 'O';
+        } else {
+            return 'X';
+        }
     }
 }
 
