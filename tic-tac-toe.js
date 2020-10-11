@@ -21,9 +21,12 @@ function addSquares(boardChildren) {
 
 
 
-
+/**
+ * Places an X or an O in the specified div
+ * @param {object} element The div the X or O is being placed in.
+ * @param {string} move The respective move being played. Either X or O
+ */
 function placeMove(element, move) {
-    console.log(move);
     if (move === 'X') {
         element.className += " X";
         element.innerHTML = 'X';
@@ -35,6 +38,11 @@ function placeMove(element, move) {
 }
 
 
+/**
+ * Checks if the game is a new game
+ * @param {Array} gameArr The array that keeps track of the game's state.
+ * @returns {boolean} true if the game is a new game and false otherwise.
+ */
 function isNewGame(gameArr) {
     for (let arrIndex = 0; arrIndex < gameArr.length; arrIndex++) {
         let innerArr = gameArr[arrIndex];
@@ -47,6 +55,12 @@ function isNewGame(gameArr) {
     return true;
 }
 
+/**
+ * 
+ * @param {Array} gameArr The array that keeps track of the game's state
+ * @param {number} index The index of the div being selected
+ * @param {string} move The respective move being played. Either X or O
+ */
 function placePlay(gameArr, index, move) {
     switch (index) {
         case 0:
@@ -80,8 +94,17 @@ function placePlay(gameArr, index, move) {
     }
 }
 
+/**
+ * 
+ * @param {object} element The div the X or O is being placed in.
+ * @param {Array} gameArr The array that keeps track of the game's state
+ * @param {number} position The index of the div being selected
+ * @returns {string} The first move of the game, either X or O
+ */
 function initialPlay(element, gameArr, position) {
     let moves = ['X', 'O'];
+
+    // Randomly select the first move
     let index = Math.floor(Math.random() * moves.length);
     let firstMove = moves[index];
     placeMove(element, firstMove)
@@ -89,6 +112,12 @@ function initialPlay(element, gameArr, position) {
     return firstMove;
 }
 
+/**
+ * 
+ * @param {Array} movesArr - The array that keeps track of the moves played
+ * @param {number} moveNo - The move number in the game 
+ * @returns {string} The next move to be played
+ */
 function getNextMove(movesArr, moveNo) {
     if (movesArr[moveNo - 1] === 'X') {
         return 'O';
@@ -97,13 +126,23 @@ function getNextMove(movesArr, moveNo) {
     }
 }
 
+/**
+ *  Handles the logic of each move in the game.
+ * @param {object} element The div the X or O is being placed in.
+ * @param {Array} gameArr The array that keeps track of the game's state
+ * @param {number} position The index of the div being selected
+ * @param {string} nextMove The next move to be played
+ */
 function gameMove(element, gameArr, position, nextMove) {
     placeMove(element, nextMove);
     placePlay(gameArr, position, nextMove)
-
-
 }
 
+/**
+ * Adds event listeners to the specified div to toggle the 'hover' class from
+ * the stylesheets.
+ * @param {object} element The divv being hovered over
+ */
 function hoverSquare(element) {
     element.addEventListener('mouseover', function() {
         element.classList.add('hover');
@@ -111,13 +150,10 @@ function hoverSquare(element) {
     element.addEventListener('mouseout', function() {
         element.classList.remove('hover');
     });
-
-
 }
 /**
- * 
- * @param {object} boardChildren A collection of the child divs of the
- * "board" div
+ * The main driver of the game 
+ * @param {object} boardChildren A collection of the child divs of the "board" div
  */
 function gameplay(boardChildren) {
     let gameArr = [
