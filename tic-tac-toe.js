@@ -104,6 +104,16 @@ function gameMove(element, gameArr, position, nextMove) {
 
 }
 
+function hoverSquare(element) {
+    element.addEventListener('mouseover', function() {
+        element.classList.add('hover');
+    });
+    element.addEventListener('mouseout', function() {
+        element.classList.remove('hover');
+    });
+
+
+}
 /**
  * 
  * @param {object} boardChildren A collection of the child divs of the
@@ -128,14 +138,14 @@ function gameplay(boardChildren) {
                 movesArr.push(firstMove);
                 movesCounter++;
             } else {
-                var nextMove = getNextMove(movesArr, movesCounter);
+                let nextMove = getNextMove(movesArr, movesCounter);
                 gameMove(childElement, gameArr, child, nextMove);
                 movesArr.push(nextMove);
                 movesCounter++;
-
             }
 
         });
+        hoverSquare(childElement);
 
     };
 
