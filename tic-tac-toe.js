@@ -1,16 +1,30 @@
+// Initialize global variables
+var gameArr = [
+    [],
+    [],
+    []
+];
+var movesArr = []
+var movesCounter = 0;
+
+
+// Allow the window to load before executing the scripts
 window.addEventListener('load',
     function() {
-        document.getElementsByClassName('btn')[0].onclick = function() {
-            let board = document.getElementById('board').children
-            addSquares(board);
-            gameplay(board);
-        }
+        // Get the children of the board
+        let board = document.getElementById('board').children;
+        // Handle the gameplay
+        addSquares(board);
+        gameplay(board, movesArr, movesCounter);
+        initializeGame(board);
     }
 );
 
+
 /**
  * Assigns the square class to the children ofthe board
- * @param {object} boardChildren The children of the div assigned the id board
+ * @param {HTMLCollection} boardChildren A collection of the child divs
+ * for the board div
  */
 function addSquares(boardChildren) {
     for (child in boardChildren) {
@@ -19,6 +33,34 @@ function addSquares(boardChildren) {
     }
 }
 
+
+/**
+ * Initializes the game's state
+ * @param {HTMLCollection} boardChildren A collection of the child divs
+ * for the board div
+ */
+function initializeGame(boardChildren) {
+    // Initialize the button
+    let button = document.getElementsByClassName('btn')[0];
+    button.addEventListener('click', function() {
+        // Initializing Arrays and counter
+        movesArr = [];
+        gameArr = [
+            [],
+            [],
+            []
+        ];
+        movesCounter = 0;
+        // Initializing the board's squares
+        addSquares(boardChildren);
+        // Initializing the status bar
+        let status = document.getElementById('status');
+        status.classList.remove('you-won');
+        status.innerHTML = "Move your mouse over a square and click to play an X or an O."
+    });
+
+
+}
 
 
 /**
@@ -44,9 +86,12 @@ function placeMove(element, move) {
  * @returns {boolean} true if the game is a new game and false otherwise.
  */
 function isNewGame(gameArr) {
+    // Iterate over outer array
     for (let arrIndex = 0; arrIndex < gameArr.length; arrIndex++) {
         let innerArr = gameArr[arrIndex];
+        // Iterate over the inner array
         for (let innerIndex = 0; innerIndex < innerArr.length; innerIndex++) {
+            // Check if all values are equal to null
             if (innerArr[innerIndex] !== null) {
                 return false;
             }
@@ -55,13 +100,14 @@ function isNewGame(gameArr) {
     return true;
 }
 
+
 /**
  * 
  * @param {Array} gameArr The array that keeps track of the game's state
  * @param {number} index The index of the div being selected
  * @param {string} move The respective move being played. Either X or O
  */
-function placePlay(gameArr, index, move) {
+function placePlay(index, move) {
     switch (index) {
         case 0:
             gameArr[0][0] = move;
@@ -94,6 +140,7 @@ function placePlay(gameArr, index, move) {
     }
 }
 
+
 /**
  * 
  * @param {object} element The div the X or O is being placed in.
@@ -101,16 +148,17 @@ function placePlay(gameArr, index, move) {
  * @param {number} position The index of the div being selected
  * @returns {string} The first move of the game, either X or O
  */
-function initialPlay(element, gameArr, position) {
+function initialPlay(element, position) {
     let moves = ['X', 'O'];
 
     // Randomly select the first move
     let index = Math.floor(Math.random() * moves.length);
     let firstMove = moves[index];
     placeMove(element, firstMove)
-    placePlay(gameArr, position, firstMove);
+    placePlay(position, firstMove);
     return firstMove;
 }
+
 
 /**
  * 
@@ -126,6 +174,7 @@ function getNextMove(movesArr, moveNo) {
     }
 }
 
+
 /**
  *  Handles the logic of each move in the game.
  * @param {object} element The div the X or O is being placed in.
@@ -133,15 +182,16 @@ function getNextMove(movesArr, moveNo) {
  * @param {number} position The index of the div being selected
  * @param {string} nextMove The next move to be played
  */
-function gameMove(element, gameArr, position, nextMove) {
+function gameMove(element, position, nextMove) {
     placeMove(element, nextMove);
-    placePlay(gameArr, position, nextMove)
+    placePlay(position, nextMove)
 }
+
 
 /**
  * Adds event listeners to the specified div to toggle the 'hover' class from
  * the stylesheets.
- * @param {object} element The divv being hovered over
+ * @param {object} element The div being hovered over
  */
 function hoverSquare(element) {
     element.addEventListener('mouseover', function() {
@@ -151,37 +201,111 @@ function hoverSquare(element) {
         element.classList.remove('hover');
     });
 }
+
+
 /**
- * The main driver of the game 
- * @param {object} boardChildren A collection of the child divs of the "board" div
+ * Check the game's state for a winner
+ * @param {string} move The move being checked
  */
-function gameplay(boardChildren) {
-    let gameArr = [
-        [null, null, null],
-        [null, null, null],
-        [null, null, null]
-    ];
-    var movesArr = []
-    var movesCounter = 0;
+function checkState(move) {
+    if (checkDiag(move) === true) {
+        announceWinner(move);
+
+    } else if (checkColumn(move) === true) {
+        announceWinner(move);
+
+    } else {
+        for (let arrIndex = 0; arrIndex < gameArr.length; arrIndex++) {
+            if (checkRow(gameArr[arrIndex], move) === true) {
+                announceWinner(move);
+            }
+        }
+    }
+}
 
 
+/**
+ * Iterates through each row for the winning combination on the horizontal axis
+ * @param {Array} row The row being iterated over
+ * @param {string} move The respective move, X or O
+ * @returns {boolean} true if the entered move has a winning combination
+ */
+function checkRow(row, move) {
+    if (row.length === 3) {
+        for (let i = 0; i < row.length; i++) {
+            if (row[i] !== move) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+/**
+ * Checks the vertical winning combinations for the respective move
+ * @param {string} move The respective move, X or O
+ * @returns {boolean} true if the entered move has a winning combination
+ */
+function checkColumn(move) {
+    const condition_1 = gameArr[0][0] === move && gameArr[1][0] === move && gameArr[2][0] === move;
+    const condition_2 = gameArr[0][1] === move && gameArr[1][1] === move && gameArr[2][1] === move;
+    const condition_3 = gameArr[0][2] === move && gameArr[1][2] === move && gameArr[2][2] === move;
+    return condition_1 === true || condition_2 == true || condition_3 === true;
+}
+
+/**
+ * Checks the diagonal winning combinations for the respective move
+ * @param {string} move The respective move, X or O
+ * @returns {boolean} true if the entered move has a winning combination
+ */
+function checkDiag(move) {
+    const condition_1 = gameArr[0][0] === move && gameArr[1][1] === move && gameArr[2][2] === move;
+    const condition_2 = gameArr[0][2] === move && gameArr[1][1] === move && gameArr[2][0] === move;
+    return condition_1 === true || condition_2 == true;
+}
+
+
+/**
+ * Announces the winner of the game
+ * @param {string} move 
+ */
+function announceWinner(move) {
+    let status = document.getElementById('status');
+    status.classList.add('you-won');
+    status.innerHTML = `Congratulations! ${move} is the Winner!`
+}
+
+
+/**
+ * The main driver for the actions taken in the game
+ * @param {HTMLCollection} boardChildren A collection of the child divs
+ * for the board div
+ * @param {Array} movesArr The array that keeps track of the moves.
+ * @param {number} movesCounter The counter that keeps track of the current move
+ */
+function gameplay(boardChildren, movesArr, movesCounter) {
     for (let child = 0; child < boardChildren.length; child++) {
         let childElement = boardChildren[child];
         let firstMove = null;
+
+        // Add on click event to each square to assign an O or an X
         childElement.addEventListener('click', function() {
             if (isNewGame(gameArr) === true) {
-                firstMove = initialPlay(childElement, gameArr, child);
+                firstMove = initialPlay(childElement, child);
                 movesArr.push(firstMove);
                 movesCounter++;
             } else {
                 let nextMove = getNextMove(movesArr, movesCounter);
-                gameMove(childElement, gameArr, child, nextMove);
+                gameMove(childElement, child, nextMove);
                 movesArr.push(nextMove);
                 movesCounter++;
             }
-
+            checkState('O');
+            checkState('X');
         });
         hoverSquare(childElement);
+
 
     };
 
