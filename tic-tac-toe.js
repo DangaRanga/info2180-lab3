@@ -115,7 +115,7 @@ function validateMove(element) {
 
 
 /**
- * 
+ * Places the respective move in the array that keeps track of the game's state
  * @param {Array} gameArr The array that keeps track of the game's state
  * @param {number} index The index of the div being selected
  * @param {string} move The respective move being played. Either X or O
@@ -155,7 +155,7 @@ function placePlay(index, move) {
 
 
 /**
- * 
+ * Handles the logic behind the initial play in the game
  * @param {object} element The div the X or O is being placed in.
  * @param {Array} gameArr The array that keeps track of the game's state
  * @param {number} position The index of the div being selected
@@ -163,7 +163,6 @@ function placePlay(index, move) {
  */
 function initialPlay(element, position) {
     let moves = ['X', 'O'];
-
     // Randomly select the first move
     let index = Math.floor(Math.random() * moves.length);
     let firstMove = moves[index];
@@ -174,7 +173,7 @@ function initialPlay(element, position) {
 
 
 /**
- * 
+ * Gets the next move to be played
  * @param {Array} movesArr - The array that keeps track of the moves played
  * @returns {string} The next move to be played
  */
@@ -323,8 +322,5 @@ function gameplay(boardChildren) {
             }
         });
         hoverSquare(childElement);
-
-
     };
-
 }
