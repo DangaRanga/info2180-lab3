@@ -105,9 +105,9 @@ function isNewGame(gameArr) {
 }
 
 /**
- * Checks if the specified element already has the specified move
+ * Checks if the specified element already has a move placed into it
  * @param {object} element The element being checked
- * @param {string} move 
+ * @returns {boolean} true if the element has a move in it and false otherwise
  */
 function validateMove(element) {
     return element.classList.contains('X') || element.classList.contains('O');
@@ -157,7 +157,6 @@ function placePlay(index, move) {
 /**
  * Handles the logic behind the initial play in the game
  * @param {object} element The div the X or O is being placed in.
- * @param {Array} gameArr The array that keeps track of the game's state
  * @param {number} position The index of the div being selected
  * @returns {string} The first move of the game, either X or O
  */
@@ -174,7 +173,6 @@ function initialPlay(element, position) {
 
 /**
  * Gets the next move to be played
- * @param {Array} movesArr - The array that keeps track of the moves played
  * @returns {string} The next move to be played
  */
 function getNextMove() {
@@ -189,7 +187,6 @@ function getNextMove() {
 /**
  *  Handles the logic of each move in the game.
  * @param {object} element The div the X or O is being placed in.
- * @param {Array} gameArr The array that keeps track of the game's state
  * @param {number} position The index of the div being selected
  * @param {string} nextMove The next move to be played
  */
@@ -240,7 +237,6 @@ function checkState(move) {
 
 /**
  * Iterates through each row for the winning combination on the horizontal axis
- * @param {Array} row The row being iterated over
  * @param {string} move The respective move, X or O
  * @returns {boolean} true if the entered move has a winning combination
  */
@@ -295,8 +291,6 @@ function announceWinner(move) {
  * The main driver for the actions taken in the game
  * @param {HTMLCollection} boardChildren A collection of the child divs
  * for the board div
- * @param {Array} movesArr The array that keeps track of the moves.
- * @param {number} movesCounter The counter that keeps track of the current move
  */
 function gameplay(boardChildren) {
     for (let child = 0; child < boardChildren.length; child++) {
