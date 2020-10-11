@@ -6,6 +6,7 @@ var gameArr = [
 ];
 var movesArr = []
 var movesCounter = 0;
+var winnerExists = false;
 
 
 // Allow the window to load before executing the scripts
@@ -15,7 +16,7 @@ window.addEventListener('load',
         let board = document.getElementById('board').children;
         // Handle the gameplay
         addSquares(board);
-        gameplay(board, movesArr, movesCounter);
+        gameplay(board);
         initializeGame(board);
     }
 );
@@ -51,6 +52,7 @@ function initializeGame(boardChildren) {
             []
         ];
         movesCounter = 0;
+        winnerExists = false;
         // Initializing the board's squares
         addSquares(boardChildren);
         // Initializing the status bar
@@ -69,7 +71,7 @@ function initializeGame(boardChildren) {
  * @param {string} move The respective move being played. Either X or O
  */
 function placeMove(element, move) {
-    if (validateMove(element, move) === false) {
+    if (validateMove(element, move) === false && winnerExists === false) {
         if (move === 'X') {
             element.className += " X";
             element.innerHTML = 'X';
@@ -104,13 +106,13 @@ function isNewGame(gameArr) {
 
 /**
  * Checks if the specified element already has the specified move
- * @param {object} element 
+ * @param {object} element The element being checked
  * @param {string} move 
  */
 function validateMove(element) {
     return element.classList.contains('X') || element.classList.contains('O');
-
 }
+
 
 /**
  * 
@@ -174,16 +176,13 @@ function initialPlay(element, position) {
 /**
  * 
  * @param {Array} movesArr - The array that keeps track of the moves played
- * @param {number} moveNo - The move number in the game 
  * @returns {string} The next move to be played
  */
-function getNextMove(movesArr, moveNo) {
-    if (movesArr.length < 9) {
-        if (movesArr[moveNo - 1] === 'X') {
-            return 'O';
-        } else {
-            return 'X';
-        }
+function getNextMove() {
+    if (movesArr[movesCounter - 1] === 'X') {
+        return 'O';
+    } else {
+        return 'X';
     }
 }
 
@@ -223,14 +222,17 @@ function hoverSquare(element) {
 function checkState(move) {
     if (checkDiag(move) === true) {
         announceWinner(move);
+        winnerExists = true;
 
     } else if (checkColumn(move) === true) {
         announceWinner(move);
+        winnerExists = true;
 
     } else {
         for (let arrIndex = 0; arrIndex < gameArr.length; arrIndex++) {
             if (checkRow(gameArr[arrIndex], move) === true) {
                 announceWinner(move);
+                winnerExists = true;
             }
         }
     }
@@ -297,7 +299,7 @@ function announceWinner(move) {
  * @param {Array} movesArr The array that keeps track of the moves.
  * @param {number} movesCounter The counter that keeps track of the current move
  */
-function gameplay(boardChildren, movesArr, movesCounter) {
+function gameplay(boardChildren) {
     for (let child = 0; child < boardChildren.length; child++) {
         let childElement = boardChildren[child];
         let firstMove = null;
@@ -305,17 +307,20 @@ function gameplay(boardChildren, movesArr, movesCounter) {
         // Add on click event to each square to assign an O or an X
         childElement.addEventListener('click', function() {
             if (isNewGame(gameArr) === true) {
+                console.log("im here");
                 firstMove = initialPlay(childElement, child);
                 movesArr.push(firstMove);
                 movesCounter++;
             } else {
-                let nextMove = getNextMove(movesArr, movesCounter);
+                let nextMove = getNextMove(movesCounter);
                 gameMove(childElement, child, nextMove);
                 movesArr.push(nextMove);
                 movesCounter++;
             }
-            checkState('O');
-            checkState('X');
+            if (winnerExists === false) {
+                checkState('O');
+                checkState('X');
+            }
         });
         hoverSquare(childElement);
 
