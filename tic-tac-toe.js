@@ -167,7 +167,6 @@ function initialPlay(element, position) {
     let firstMove = moves[index];
     placeMove(element, firstMove)
     placePlay(position, firstMove);
-    document.getElementById('status').innerHTML = `Starting Player: ${firstMove}`;
     return firstMove;
 }
 
@@ -178,10 +177,8 @@ function initialPlay(element, position) {
  */
 function getNextMove() {
     if (movesArr[movesCounter - 1] === 'X') {
-        document.getElementById('status').innerHTML = 'Current player: X';
         return 'O';
     } else {
-        document.getElementById('status').innerHTML = 'Current player: O';
         return 'X';
     }
 }
